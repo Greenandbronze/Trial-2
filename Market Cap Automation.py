@@ -19,11 +19,13 @@ Total_Rows=Worksheet.nrows
 print(Total_Rows)
 
 #Loop through Total Rows
+'''
 def loop_through_excel (Start_Row, Total_Rows):
     for row_cursor in range (Start_Row,Total_Rows):
         Ticker_Symbol= Worksheet.cell(row_cursor,0).value
         print (Ticker_Symbol)
     return 
+'''
 #Loop Variables
 Start_Row= 1
 
@@ -39,7 +41,7 @@ Tickers= pd.read_excel(Ticker_List,
 
 #Searches, Parses, and then locates Market Cap from Yahoo Finance.
 #html = uo('https://finance.yahoo.com/quote/AAPL/key-statistics?p=AAPL')
-for i in Ticker_List:
+for i in Tickers:
        html = uo('https://finance.yahoo.com/quote/'+ i + '/key-statistics?p=' + i + "'")
        print(i)
 read= bs(html.read(),'html.parser')
