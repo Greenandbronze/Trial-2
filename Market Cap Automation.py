@@ -38,8 +38,10 @@ Tickers= pd.read_excel(Ticker_List,
                        keep_default_na=True)
 
 #Searches, Parses, and then locates Market Cap from Yahoo Finance.
-html = uo('https://finance.yahoo.com/quote/AAPL/key-statistics?p=AAPL')
-# html = uo('https://finance.yahoo.com/quote/'+ Ticker_Symbol + '/key-statistics?p=' + Ticker_Symbol + "'")
+#html = uo('https://finance.yahoo.com/quote/AAPL/key-statistics?p=AAPL')
+for i in Ticker_List:
+       html = uo('https://finance.yahoo.com/quote/'+ i + '/key-statistics?p=' + i + "'")
+       print(i)
 read= bs(html.read(),'html.parser')
 MarketCap= read.find('td', {'class':'Fz(s) Fw(500) Ta(end) Pstart(10px) Miw(60px)'})
 
