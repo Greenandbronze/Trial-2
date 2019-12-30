@@ -87,23 +87,26 @@ for i in pricelist:
 
 for i in sqftlist:
     for j in i:
-        sq=j.get_text()
+        sq=j.get_text() 
         for k in j:
-            sqsplit=sq.split()
-            outputsqftlist.append(sq)   
-
-print(outputsqftlist)
-#print(sqsplit)                
+            sqsplit=sq.split(' ')
+            sqsplit=sqsplit[0].replace(',','')
+            sqsplit=sqsplit.strip('+')
+            sqsplit=sqsplit.strip(' sqft')
+            outputsqftlist.append(int(sqsplit)) 
+            
+print(outputsqftlist)             
 #Step 6: Builds DataFrame with designated headers and output lists.    
 '''df= pd.DataFrame({'Street Address': outputstreetlist,
                   'City': outputcitylist,
                   'State': outputstatelist,
                   'Zipcode': outputzipcodelist,
                   'Price': outputpricelist,
-                  'SqFt': outputsqftlist})
+                  'SqFt': outputsqftlist,
+                  'Price per SqFt': outputpricelist/outputsqftlist})
 
-print(df)'''
-'''#Gets Date and Time of Now.   
+print(df)
+#Gets Date and Time of Now.   
 today= dt.datetime.now()
 #Creates Today variable with YYYY,MM,DD,HH,MM timestamp to pass to filename.
 Today= today.strftime('%Y%m%d%H%M')
