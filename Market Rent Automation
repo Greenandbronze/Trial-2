@@ -1,0 +1,111 @@
+from urllib.request import urlopen as uo
+from bs4 import BeautifulSoup as bs
+import pandas as pd
+import xlrd as xl
+from xlutils.copy import copy
+import datetime as dt
+
+#Need to add in V2
+#-Append to same Excel file with date stamp.
+#-Splice Sqft data to remove '+ sqft'.
+#-Dynamic Zipcodes to pass a list of zipcodes.
+#-Other websites: Zillow, Redfin, rent.com, Rentals.com
+
+
+#Need to create similar but for recent sales.
+
+
+
+#Parameters for search.
+beds=str(3)
+baths=str(2)
+property_type= 'single-family-home'
+zipcode_set=str(32907)
+
+#Realtor.com dynamic URL.
+htmlrealtor= uo('https://www.realtor.com/apartments/'+zipcode_set+'/beds-'+beds+'/baths-'+baths+'/type-'+property_type)
+
+#Step 2: Lists created from Realtor.com dynamic URL datapull.
+streetlist=[]
+citylist=[]
+statelist=[]
+zipcodelist=[]
+pricelist=[]
+sqftlist=[]
+
+#Step1: Datapull from Realtor.com dynamic URL.
+read= bs(htmlrealtor.read(),'html.parser')
+street= read.find_all('span', attrs={'class': 'listing-street-address'})
+city= read.find_all('span', attrs={'class': 'listing-city'})
+state= read.find_all('span', attrs={'class': 'listing-region'})
+zipcode= read.find_all('span', attrs={'class': 'listing-postal'})
+price= read.find_all('span', attrs={'class': 'data-price'})
+sqft= read.find_all('li', attrs={'data-label': 'property-meta-sqft'})
+
+#Step 3: Function that appends datapull to Lists.
+streetlist.append(street)
+citylist.append(city)
+statelist.append(state)
+zipcodelist.append(zipcode)
+pricelist.append(price)
+sqftlist.append(sqft)
+
+#Step 4: Final output lists with text only. (No HTML Tags)
+outputstreetlist=[]
+outputcitylist=[]
+outputstatelist=[]
+outputzipcodelist=[]
+outputpricelist=[]
+outputsqftlist=[]
+
+
+#Step 5: For loops that strip text from tags and appends to output lists.
+for i in streetlist:
+    for j in i:
+        s=j.get_text()
+        outputstreetlist.append(s)
+        
+for i in citylist:
+    for j in i:
+        c=j.get_text()
+        outputcitylist.append(c)
+
+for i in statelist: 
+    for j in i:
+        st=j.get_text()
+        outputstatelist.append(st)
+
+for i in zipcodelist: 
+    for j in i:
+        z=j.get_text()
+        outputzipcodelist.append(z)
+
+for i in pricelist:
+    for j in i:
+        p=j.get_text()
+        outputpricelist.append(p)
+
+for i in sqftlist:
+    for j in i:
+        sq=j.get_text()
+        for k in j:
+            sqsplit=sq.split()
+            outputsqftlist.append(sq)   
+
+print(outputsqftlist)
+#print(sqsplit)                
+#Step 6: Builds DataFrame with designated headers and output lists.    
+'''df= pd.DataFrame({'Street Address': outputstreetlist,
+                  'City': outputcitylist,
+                  'State': outputstatelist,
+                  'Zipcode': outputzipcodelist,
+                  'Price': outputpricelist,
+                  'SqFt': outputsqftlist})
+
+print(df)'''
+'''#Gets Date and Time of Now.   
+today= dt.datetime.now()
+#Creates Today variable with YYYY,MM,DD,HH,MM timestamp to pass to filename.
+Today= today.strftime('%Y%m%d%H%M')
+#Creates Excel File with the above Today timestamp.  
+df.to_excel('Rent_Outputs_Created_'+Today+'.xlsx')'''
