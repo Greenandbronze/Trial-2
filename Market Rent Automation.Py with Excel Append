@@ -107,21 +107,25 @@ df= pd.DataFrame({'Street Address': outputstreetlist,
                   'SqFt': outputsqftlist,
                   'Date': today.strftime('%m%d%Y')})
 
-def append_df_to_excel(Excelpath, df, sheet_name= 'Rental List', startrow= None, truncate_sheet= False):
-    writer= pd.ExcelWriter(Excelpath, engine= 'openpyxl')
+book= lw(Excelpath)
+writer= pd.ExcelWriter(Excelpath, engine= 'openpyxl')
+writer.book= book
+start= book['Rental List']
+writer.sheets= dict((ws.title,ws) for ws in book.worksheets)
+
+ws= book['Rental List']
+
+for row in ws.rows:
+    values= [cell.value for cell in row]
+    if not any (values):
+        start= row[0].row-1
+        break
     
-    try:
-        writer.book= lw('Rent_Outputs_Master.xlsx')
-        if startrow is None and sheet_name in writer.book.sheetnames:
-            startrow= writer.book["Rental List"].max_row
-        writer.sheets= {ws.title:ws for ws in writer.book.worksheets}
-    except FileNotFoundError:
-        pass
-    if startrow is None:
-        startrow= 0
+df.to_excel(writer, sheet_name= 'Rental List', startrow= start, index= False, header= True)
 
-    df.to_excel(writer, sheet_name, startrow= startrow)
+print ('Saving to Excel')
 
+try:
     writer.save()
-
-    print (append_df_to_excel)
+except:
+    print('The file is open elsewhere, please close it')
